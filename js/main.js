@@ -59,6 +59,22 @@ let cube = {
     UP_CENTRAL_CUBIES : [25],
     DOWN_CENTRAL_CUBIES : [26],
 
+    getCubieByVID : function (vid){
+        for(let i = 0; i < 26; i++){
+            if(this.cubies[i].vid == vid){
+                return this.cubies[i];
+            }
+        }
+    },
+    
+    getCubiesByVID : function (vids){
+        let ans = [];
+        for(let vid of vids){
+            ans.push(this.getCubieByVID(vid));
+        }
+        return ans;
+    },
+
     setCubiesVID : function(cubies,ids){
         console.log(ids);
         for(let i = 0; i < ids.length; i++){
@@ -68,14 +84,14 @@ let cube = {
     },
 
     rotateClockwise : function(ids,count){
-        let cubies = getCubiesByVID(ids);
+        let cubies = cube.getCubiesByVID(ids);
         let ids_clone = [...ids];//cloning
         ids_clone.push.apply(ids_clone,ids_clone.splice(0,count));
         this.setCubiesVID(cubies,ids_clone);
     },
 
     rotateAntiClockwise : function(ids,count){
-        let cubies = getCubiesByVID(ids);
+        let cubies = cube.getCubiesByVID(ids);
         let ids_clone = [...ids];//cloning
         ids_clone.unshift.apply(ids_clone,ids_clone.splice(ids_clone.length-count,count));
         this.setCubiesVID(cubies,ids_clone);
@@ -244,7 +260,7 @@ function clickHandler(e){
     intersections[0].object.geometry.colorsNeedUpdate = true;
 }
 
-let leftSideCubies = getCubiesByVID([].concat(cube.RIGHT_CENTRAL_CUBIES).concat(cube.RIGHT_CORNER_CUBIES).concat(cube.RIGHT_EDGE_CUBIES));
+let leftSideCubies = cube.getCubiesByVID([].concat(cube.RIGHT_CENTRAL_CUBIES).concat(cube.RIGHT_CORNER_CUBIES).concat(cube.RIGHT_EDGE_CUBIES));
 
 function render(time){
     
@@ -263,29 +279,15 @@ function handleResizing(){
     camera.updateProjectionMatrix();
 }
 
-function getCubieByVID(vid){
-    for(let i = 0; i < 26; i++){
-        if(cube.cubies[i].vid == vid){
-            return cube.cubies[i];
-        }
-    }
-}
 
-function getCubiesByVID(vids){
-    let ans = [];
-    for(let vid of vids){
-        ans.push(getCubieByVID(vid));
-    }
-    return ans;
-}
 
 function resetColor(){
-    let leftSideCubies  = getCubiesByVID([].concat(cube.LEFT_EDGE_CUBIES).concat(cube.LEFT_CENTRAL_CUBIES).concat(cube.LEFT_CORNER_CUBIES));
-    let rightSideCubies = getCubiesByVID([].concat(cube.RIGHT_EDGE_CUBIES).concat(cube.RIGHT_CENTRAL_CUBIES).concat(cube.RIGHT_CORNER_CUBIES));
-    let frontSideCubies = getCubiesByVID([].concat(cube.FRONT_EDGE_CUBIES).concat(cube.FRONT_CENTRAL_CUBIES).concat(cube.FRONT_CORNER_CUBIES));
-    let backSideCubies  = getCubiesByVID([].concat(cube.BACK_EDGE_CUBIES).concat(cube.BACK_CENTRAL_CUBIES).concat(cube.BACK_CORNER_CUBIES));
-    let upSideCubies    = getCubiesByVID([].concat(cube.UP_EDGE_CUBIES).concat(cube.UP_CENTRAL_CUBIES).concat(cube.UP_CORNER_CUBIES));
-    let downSideCubies  = getCubiesByVID([].concat(cube.DOWN_EDGE_CUBIES).concat(cube.DOWN_CENTRAL_CUBIES).concat(cube.DOWN_CORNER_CUBIES));
+    let leftSideCubies  = cube.getCubiesByVID([].concat(cube.LEFT_EDGE_CUBIES).concat(cube.LEFT_CENTRAL_CUBIES).concat(cube.LEFT_CORNER_CUBIES));
+    let rightSideCubies = cube.getCubiesByVID([].concat(cube.RIGHT_EDGE_CUBIES).concat(cube.RIGHT_CENTRAL_CUBIES).concat(cube.RIGHT_CORNER_CUBIES));
+    let frontSideCubies = cube.getCubiesByVID([].concat(cube.FRONT_EDGE_CUBIES).concat(cube.FRONT_CENTRAL_CUBIES).concat(cube.FRONT_CORNER_CUBIES));
+    let backSideCubies  = cube.getCubiesByVID([].concat(cube.BACK_EDGE_CUBIES).concat(cube.BACK_CENTRAL_CUBIES).concat(cube.BACK_CORNER_CUBIES));
+    let upSideCubies    = cube.getCubiesByVID([].concat(cube.UP_EDGE_CUBIES).concat(cube.UP_CENTRAL_CUBIES).concat(cube.UP_CORNER_CUBIES));
+    let downSideCubies  = cube.getCubiesByVID([].concat(cube.DOWN_EDGE_CUBIES).concat(cube.DOWN_CENTRAL_CUBIES).concat(cube.DOWN_CORNER_CUBIES));
 
     for(let cubie of leftSideCubies){
         let face_id = FACE_ID_MAP.indexOf('l');
