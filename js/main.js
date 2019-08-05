@@ -188,6 +188,198 @@ let cube = {
     },
 };
 
+let cubeAnimator = {
+    r1 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.RIGHT_CENTRAL_CUBIES).concat(cube.RIGHT_CORNER_CUBIES).concat(cube.RIGHT_EDGE_CUBIES));
+        let group = new THREE.Object3D();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(-1,0,0),90*Math.PI/180,0);
+    },
+    
+    r2 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.RIGHT_CENTRAL_CUBIES).concat(cube.RIGHT_CORNER_CUBIES).concat(cube.RIGHT_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(-1,0,0),Math.PI,0);
+    },
+
+    r3 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.RIGHT_CENTRAL_CUBIES).concat(cube.RIGHT_CORNER_CUBIES).concat(cube.RIGHT_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(1,0,0),90*Math.PI/180,0);
+    },
+
+    l1 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.LEFT_CENTRAL_CUBIES).concat(cube.LEFT_CORNER_CUBIES).concat(cube.LEFT_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(1,0,0),90*Math.PI/180,0);
+    },
+
+    l2 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.LEFT_CENTRAL_CUBIES).concat(cube.LEFT_CORNER_CUBIES).concat(cube.LEFT_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(1,0,0),Math.PI,0);
+    },
+
+    l3 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.LEFT_CENTRAL_CUBIES).concat(cube.LEFT_CORNER_CUBIES).concat(cube.LEFT_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(-1,0,0),90*Math.PI/180,0);
+    },
+
+    f1 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.FRONT_CENTRAL_CUBIES).concat(cube.FRONT_CORNER_CUBIES).concat(cube.FRONT_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(0,0,-1),90*Math.PI/180,0);
+    },
+
+    f2 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.FRONT_CENTRAL_CUBIES).concat(cube.FRONT_CORNER_CUBIES).concat(cube.FRONT_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(0,0,-1),Math.PI,0);
+    },
+
+    f3 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.FRONT_CENTRAL_CUBIES).concat(cube.FRONT_CORNER_CUBIES).concat(cube.FRONT_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(0,0,1),90*Math.PI/180,0);
+    },
+
+    b1 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.BACK_CENTRAL_CUBIES).concat(cube.BACK_CORNER_CUBIES).concat(cube.BACK_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(0,0,1),90*Math.PI/180,0);
+    },
+
+    b2 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.BACK_CENTRAL_CUBIES).concat(cube.BACK_CORNER_CUBIES).concat(cube.BACK_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(0,0,1),Math.PI,0);
+    },
+
+    b3 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.BACK_CENTRAL_CUBIES).concat(cube.BACK_CORNER_CUBIES).concat(cube.BACK_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(0,0,-1),90*Math.PI/180,0);
+    },
+
+    u1 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.UP_CENTRAL_CUBIES).concat(cube.UP_CORNER_CUBIES).concat(cube.UP_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(0,-1,0),90*Math.PI/180,0);
+    },
+
+    u2 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.UP_CENTRAL_CUBIES).concat(cube.UP_CORNER_CUBIES).concat(cube.UP_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(0,-1,0),Math.PI,0);
+    },
+
+    u3 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.UP_CENTRAL_CUBIES).concat(cube.UP_CORNER_CUBIES).concat(cube.UP_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(0,1,0),90*Math.PI/180,0);
+    },
+
+    d1 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.DOWN_CENTRAL_CUBIES).concat(cube.DOWN_CORNER_CUBIES).concat(cube.DOWN_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(0,1,0),90*Math.PI/180,0);
+    },
+
+    d2 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.DOWN_CENTRAL_CUBIES).concat(cube.DOWN_CORNER_CUBIES).concat(cube.DOWN_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(0,1,0),Math.PI,0);
+    },
+
+    d3 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.DOWN_CENTRAL_CUBIES).concat(cube.DOWN_CORNER_CUBIES).concat(cube.DOWN_EDGE_CUBIES));
+        let group = new THREE.Group();
+        for(let cubie of cubiesToRotate){
+            group.add(cubie);
+        }
+        scene.add(group);
+        this.rotate(group,new THREE.Vector3(0,-1,0),90*Math.PI/180,0);
+    },
+
+    rotate : function(cubies,axis,angle,total){
+        if(total <= angle){
+            total+=0.01;
+            cubies.rotateOnAxis(axis,0.01);
+            renderer.render(scene,camera);
+            requestAnimationFrame(function(){
+                cubeAnimator.rotate(cubies,axis,angle,total);
+            });
+        }
+    }
+};
 
 let canvas = document.getElementById('c');
 let scene = new THREE.Scene();
@@ -198,8 +390,6 @@ camera.position.set(5,4,5);
 camera.lookAt(0,0,0);
 scene.background = 0x000000;
 
-let world = new THREE.Object3D();
-
 canvas.addEventListener('resize',handleResizing);
 canvas.addEventListener('click',clickHandler);
 
@@ -207,8 +397,9 @@ canvas.addEventListener('click',clickHandler);
 handleResizing();
 makeCube();
 resetColor();
-cube.r3();
 
+cube.d3();
+cubeAnimator.d3();
 
 function makeCube(){
     let black = new THREE.Color(0,0,0);
@@ -260,15 +451,8 @@ function clickHandler(e){
     intersections[0].object.geometry.colorsNeedUpdate = true;
 }
 
-let leftSideCubies = cube.getCubiesByVID([].concat(cube.RIGHT_CENTRAL_CUBIES).concat(cube.RIGHT_CORNER_CUBIES).concat(cube.RIGHT_EDGE_CUBIES));
-
 function render(time){
-    
-    for(let cubie of leftSideCubies){
-        cubie.setRotationFromAxisAngle(new THREE.Vector3(1,0,0),0.01);
-        cubie.rotateOnAxis(new THREE.Vector3(1,0,0),0.01);
-    }
-
+    t.rotateOnAxis(new THREE.Vector3(1,0,0),0.01);
     renderer.render(scene, camera);
     requestAnimationFrame(render);
 }
@@ -278,8 +462,6 @@ function handleResizing(){
     camera.aspect = canvas.clientWidth/canvas.clientHeight;
     camera.updateProjectionMatrix();
 }
-
-
 
 function resetColor(){
     let leftSideCubies  = cube.getCubiesByVID([].concat(cube.LEFT_EDGE_CUBIES).concat(cube.LEFT_CENTRAL_CUBIES).concat(cube.LEFT_CORNER_CUBIES));
