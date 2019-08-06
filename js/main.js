@@ -97,6 +97,81 @@ let cube = {
         this.setCubiesVID(cubies,ids_clone);
     },
 
+    getState : function(){
+        let state = []
+
+        let leftOrderedVID = this.order(this.LEFT_EDGE_CUBIES,this.LEFT_CORNER_CUBIES,this.LEFT_CENTRAL_CUBIES);
+        let leftOrderedCubies = this.getCubiesByVID(leftOrderedVID);
+        let leftState = [];
+        let faceID = FACE_ID_MAP.indexOf('l');
+        for(let cubie of leftOrderedCubies){
+            leftState.push(cubie.geometry.faces[2*faceID].color);
+        }
+        state.push(leftState);
+
+        let rightOrderedVID = this.order(this.RIGHT_EDGE_CUBIES,this.RIGHT_CORNER_CUBIES,this.RIGHT_CENTRAL_CUBIES);
+        let rightOrderedCubies = this.getCubiesByVID(rightOrderedVID);
+        let rightState = [];
+        faceID = FACE_ID_MAP.indexOf('r');
+        for(let cubie of rightOrderedCubies){
+            rightState.push(cubie.geometry.faces[2*faceID].color);
+        }
+        state.push(rightState);
+
+        let frontOrderedVID = this.order(this.FRONT_EDGE_CUBIES,this.FRONT_CORNER_CUBIES,this.FRONT_CENTRAL_CUBIES);
+        let frontOrderedCubies = this.getCubiesByVID(frontOrderedVID);
+        let frontState = [];
+        faceID = FACE_ID_MAP.indexOf('f');
+        for(let cubie of frontOrderedCubies){
+            frontState.push(cubie.geometry.faces[2*faceID].color);
+        }
+        state.push(frontState);
+
+        let backOrderedVID = this.order(this.BACK_EDGE_CUBIES,this.BACK_CORNER_CUBIES,this.BACK_CENTRAL_CUBIES);
+        let backOrderedCubies = this.getCubiesByVID(backOrderedVID);
+        let backState = [];
+        faceID = FACE_ID_MAP.indexOf('b');
+        for(let cubie of backOrderedCubies){
+            backState.push(cubie.geometry.faces[2*faceID].color);
+        }
+        state.push(backState);
+
+        let upOrderedVID = this.order(this.UP_EDGE_CUBIES,this.UP_CORNER_CUBIES,this.UP_CENTRAL_CUBIES);
+        let upOrderedCubies = this.getCubiesByVID(upOrderedVID);
+        let upState = [];
+        faceID = FACE_ID_MAP.indexOf('u');
+        for(let cubie of upOrderedCubies){
+            upState.push(cubie.geometry.faces[2*faceID].color);
+        }
+        state.push(upState);
+
+        let downOrderedVID = this.order(this.DOWN_EDGE_CUBIES,this.DOWN_CORNER_CUBIES,this.DOWN_CENTRAL_CUBIES);
+        let downOrderedCubies = this.getCubiesByVID(downOrderedVID);
+        let downState = [];
+        faceID = FACE_ID_MAP.indexOf('d');
+        for(let cubie of downOrderedCubies){
+            downState.push(cubie.geometry.faces[2*faceID].color);
+        }
+        state.push(downState);
+
+        return state;
+
+    },
+
+    order : function(edge,corner,centre){
+        let ans = [];
+        ans.push(corner[0]);
+        ans.push(edge[0]);
+        ans.push(corner[1]);
+        ans.push(edge[3]);
+        ans.push(centre[0]);
+        ans.push(edge[1]);
+        ans.push(corner[3]);
+        ans.push(edge[2]);
+        ans.push(corner[2]);
+        return ans;
+    },
+
     r1 : function(){
         this.rotateClockwise(this.RIGHT_EDGE_CUBIES,1);
         this.rotateClockwise(this.RIGHT_CORNER_CUBIES,1);
@@ -397,9 +472,12 @@ canvas.addEventListener('click',clickHandler);
 handleResizing();
 makeCube();
 resetColor();
-
+renderer.render(scene,camera);
+/*
 cube.d3();
 cubeAnimator.d3();
+*/
+console.log(cube.getState());
 
 function makeCube(){
     let black = new THREE.Color(0,0,0);
