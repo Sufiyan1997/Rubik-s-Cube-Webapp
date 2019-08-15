@@ -187,6 +187,46 @@ let cube = {
         return ans;
     },
 
+    makeWhite : function() {
+        let leftSideCubies  = cube.getCubiesByVID([].concat(cube.LEFT_EDGE_CUBIES).concat(cube.LEFT_CORNER_CUBIES));
+        let rightSideCubies = cube.getCubiesByVID([].concat(cube.RIGHT_EDGE_CUBIES).concat(cube.RIGHT_CORNER_CUBIES));
+        let frontSideCubies = cube.getCubiesByVID([].concat(cube.FRONT_EDGE_CUBIES).concat(cube.FRONT_CORNER_CUBIES));
+        let backSideCubies  = cube.getCubiesByVID([].concat(cube.BACK_EDGE_CUBIES).concat(cube.BACK_CORNER_CUBIES));
+        let upSideCubies    = cube.getCubiesByVID([].concat(cube.UP_EDGE_CUBIES).concat(cube.UP_CORNER_CUBIES));
+        let downSideCubies  = cube.getCubiesByVID([].concat(cube.DOWN_EDGE_CUBIES).concat(cube.DOWN_CORNER_CUBIES));
+        
+        for(let cubie of leftSideCubies){
+            let face_id = FACE_ID_MAP.indexOf('l');
+            colorFace(cubie,face_id,COLORS[0]);
+        }
+        console.log(rightSideCubies);
+        for(let cubie of rightSideCubies){
+            
+            let face_id = FACE_ID_MAP.indexOf('r');
+            colorFace(cubie,face_id,COLORS[0]);
+        }
+    
+        for(let cubie of frontSideCubies){
+            let face_id = FACE_ID_MAP.indexOf('f');
+            colorFace(cubie,face_id,COLORS[0]);
+        }
+    
+        for(let cubie of backSideCubies){
+            let face_id = FACE_ID_MAP.indexOf('b');
+            colorFace(cubie,face_id,COLORS[0]);
+        }
+    
+        for(let cubie of upSideCubies){
+            let face_id = FACE_ID_MAP.indexOf('u');
+            colorFace(cubie,face_id,COLORS[0]);
+        }
+
+        for(let cubie of downSideCubies){
+            let face_id = FACE_ID_MAP.indexOf('d');
+            colorFace(cubie,face_id,COLORS[0]);
+        }
+    },
+
     r1 : function(){
         this.rotateClockwise(this.RIGHT_EDGE_CUBIES,1);
         this.rotateClockwise(this.RIGHT_CORNER_CUBIES,1);
@@ -522,6 +562,12 @@ resetColor();
 renderer.render(scene,camera);
 requestAnimationFrame(render);
 
+setTimeout(function () {
+    cube.makeWhite();
+    console.log(cube.getState());
+    renderer.render(scene,camera);
+},3000);
+
 function render(time) {
     requestAnimationFrame(render);
     controls.update();
@@ -551,18 +597,21 @@ function makeCubie(colors,location,vid){
     cube.position.y = location.y*1.05;
     cube.position.z = location.z*1.05;
 
+
     for(let i = 0; i < 6; i++){
         colorFace(cube,i,colors[i]);
     }
 
+    cube.dynamic = true;
     scene.add(cube);
     cube.vid= vid;
     return cube;
 }
 
 function colorFace(cube,face,color){
-    cube.geometry.faces[face*2].color = color;
-    cube.geometry.faces[face*2+1].color = color;
+    cube.geometry.faces[face*2].color.setRGB(color.r,color.g,color.b);
+    cube.geometry.faces[face*2+1].color.setRGB(color.r,color.g,color.b);
+    cube.geometry.colorsNeedUpdate = true;
 }
 
 function clickHandler(e){
