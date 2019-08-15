@@ -79,7 +79,6 @@ let cube = {
 
     setCubiesVID : function(cubies,ids){
         for(let i = 0; i < ids.length; i++){
-            console.log(cubies[i].vid+" "+ids[i]);
             cubies[i].vid = ids[i];
         }
     },
@@ -511,16 +510,24 @@ scene.background = 0x000000;
 canvas.addEventListener('resize',handleResizing);
 canvas.addEventListener('click',clickHandler);
 
+const controls = new THREE.OrbitControls(camera, canvas);
+controls.target.set(0,0,0);
+controls.update();
+
 handleResizing();
 makeCube();
 resetColor();
-renderer.render(scene,camera);
 
-cubeAnimator.r1();
-setTimeout(function () {
-    cube.r1();
-    console.log(cube.getState());
-},3500);
+
+renderer.render(scene,camera);
+requestAnimationFrame(render);
+
+function render(time) {
+    requestAnimationFrame(render);
+    controls.update();
+    renderer.render(scene,camera);
+}
+
 
 function makeCube(){
     let black = new THREE.Color(0,0,0);
@@ -550,7 +557,6 @@ function makeCubie(colors,location,vid){
 
     scene.add(cube);
     cube.vid= vid;
-    cube.mainRotation = cube.rotation;
     return cube;
 }
 
@@ -572,8 +578,6 @@ function clickHandler(e){
     if(intersections[0]){
         console.log(intersections[0].object.vid);
     }
-    /*intersections[0].face.color.setRGB(Math.random(),Math.random(),Math.random());
-    intersections[0].object.geometry.colorsNeedUpdate = true;*/
 }
 
 function handleResizing(){
@@ -639,7 +643,6 @@ function shuffle(){
 function randomMove(){
     let side = Math.floor(Math.random()*6);
     let turns = Math.floor(Math.random()*3);
-    console.log(MOVES[6*turns+side][1].name);
     MOVES[6*turns+side][1].call(cubeAnimator);
     return MOVES[6*turns+side][0];
 }
