@@ -38,7 +38,6 @@ const VID_POS_MAP = new Map(
 const FACE_ID_MAP = ['r','l','u','d','f','b'];
 const COLORS = [new THREE.Color(1,1,1),new THREE.Color(1,1,0),new THREE.Color(1,0,0),new THREE.Color(1,0.4,0),new THREE.Color(0,0,1),new THREE.Color(0,1,0)];
 
-
 let cube = {
     LEFT_EDGE_CUBIES : [1,2,3,4],
     RIGHT_EDGE_CUBIES : [9,10,11,12],
@@ -60,6 +59,33 @@ let cube = {
     BACK_CENTRAL_CUBIES : [24],
     UP_CENTRAL_CUBIES : [25],
     DOWN_CENTRAL_CUBIES : [26],
+
+    verify : function(){
+        let state = this.getState();
+        console.log(state);
+        let occurances = new Map(
+            [
+                ['r',0],
+                ['g',0],
+                ['b',0],
+                ['w',0],
+                ['y',0],
+                ['o',0],
+            ]
+        );
+        for(let i = 0; i < 6; i++){
+            for(let j = 0; j < 9; j++){
+                occurances.set(state[i][j],occurances.get(state[i][j])+1);
+            }
+        }
+        console.log(occurances);
+        for(let color of ['r','g','b','w','o','y']){
+            if(occurances.get(color) != 9){
+                return false;
+            }
+        }
+        return true;
+    },
 
     getCubieByVID : function (vid){
         for(let i = 0; i < 26; i++){
@@ -110,7 +136,7 @@ let cube = {
             origin.set(-15,cubie.position.y,cubie.position.z);
             direction.set(1,0,0).normalize();
             raycaster.set(origin,direction);
-            leftState.push(raycaster.intersectObject(cubie)[0].face.color);
+            leftState.push(threeColor2Name(raycaster.intersectObject(cubie)[0].face.color));
         }
         state.push(leftState);
 
@@ -121,7 +147,7 @@ let cube = {
             origin.set(15,cubie.position.y,cubie.position.z);
             direction.set(-1,0,0).normalize();
             raycaster.set(origin,direction);
-            rightState.push(raycaster.intersectObject(cubie)[0].face.color);
+            rightState.push(threeColor2Name(raycaster.intersectObject(cubie)[0].face.color));
         }
         state.push(rightState);
 
@@ -132,7 +158,7 @@ let cube = {
             origin.set(cubie.position.x,cubie.position.y,15);
             direction.set(0,0,-1).normalize();
             raycaster.set(origin,direction);
-            frontState.push(raycaster.intersectObject(cubie)[0].face.color);
+            frontState.push(threeColor2Name(raycaster.intersectObject(cubie)[0].face.color));
         }
         state.push(frontState);
 
@@ -143,7 +169,7 @@ let cube = {
             origin.set(cubie.position.x,cubie.position.y,-15);
             direction.set(0,0,1).normalize();
             raycaster.set(origin,direction);
-            backState.push(raycaster.intersectObject(cubie)[0].face.color);
+            backState.push(threeColor2Name(raycaster.intersectObject(cubie)[0].face.color));
         }
         state.push(backState);
 
@@ -154,7 +180,7 @@ let cube = {
             origin.set(cubie.position.x,15,cubie.position.z);
             direction.set(0,-1,0).normalize();
             raycaster.set(origin,direction);
-            upState.push(raycaster.intersectObject(cubie)[0].face.color);
+            upState.push(threeColor2Name(raycaster.intersectObject(cubie)[0].face.color));
         }
         state.push(upState);
 
@@ -165,7 +191,7 @@ let cube = {
             origin.set(cubie.position.x,-15,cubie.position.z);
             direction.set(0,1,0).normalize();
             raycaster.set(origin,direction);
-            downState.push(raycaster.intersectObject(cubie)[0].face.color);
+            downState.push(threeColor2Name(raycaster.intersectObject(cubie)[0].face.color));
         }
         state.push(downState);
 
@@ -199,7 +225,7 @@ let cube = {
             let face_id = FACE_ID_MAP.indexOf('l');
             colorFace(cubie,face_id,COLORS[0]);
         }
-        console.log(rightSideCubies);
+        
         for(let cubie of rightSideCubies){
             
             let face_id = FACE_ID_MAP.indexOf('r');
@@ -460,7 +486,7 @@ let cubeAnimator = {
     },
 
     move : function(mesh,axis,rotation){
-        rotation = rotation.toFixed(5);
+        mesh.rotateOnWorldAxis(axis,rotation);
         if(axis.x == 1 || axis.x == -1){
             let x = -1*mesh.position.z;
             let y = mesh.position.y;
@@ -500,7 +526,7 @@ let cubeAnimator = {
                 mesh.position.y = newPos.y;
             }
         }
-        mesh.rotateOnWorldAxis(axis,rotation);
+        
     },
 
     rotate : function(cubies,axis,angle,total){
@@ -514,6 +540,7 @@ let cubeAnimator = {
                 cubeAnimator.rotate(cubies,axis,angle,total);
             });
         }
+        
     }
 };
 
@@ -538,12 +565,54 @@ const MOVES = [
 [cube.b3,cubeAnimator.b3],
             ];
 
+
+let currentColor = 1;
+let displayColor = document.querySelector('#displayColor');
+displayColor.style.backgroundColor = "rgb(" + Math.floor(COLORS[currentColor].r*255) + ", " + Math.floor(COLORS[currentColor].g*255) + ", " + Math.floor(COLORS[currentColor].b*255) + ")";
+
+let makeWhiteBtn = document.querySelector('#makeWhite');
+let resetColorBtn = document.querySelector('#resetColor');
+let shuffleBtn = document.querySelector('#shuffle');
+let colorBtn = document.querySelector('#pickColor');
+let verifyBtn = document.querySelector('#verify');
+makeWhiteBtn.addEventListener('click',function(){
+    for(let cubie of cube.cubies){
+        scene.remove(cubie);
+    }
+    makeCube();
+    resetColor();
+    cube.makeWhite();
+});
+resetColorBtn.addEventListener('click',function(){
+    for(let cubie of cube.cubies){
+        scene.remove(cubie);
+    }
+    makeCube();
+    resetColor();
+});
+shuffleBtn.addEventListener('click',function () {
+    shuffle();
+});
+colorBtn.addEventListener('click',function(e){
+    currentColor = +e.target.value;
+    displayColor.style.backgroundColor = "rgb(" + Math.floor(COLORS[currentColor].r*255) + ", " + Math.floor(COLORS[currentColor].g*255) + ", " + Math.floor(COLORS[currentColor].b*255) + ")";
+});
+verifyBtn.addEventListener('click',function(){
+    let valid = cube.verify();    
+    let msgEle = document.createElement('h2');
+    msgEle.innerText = valid?"Valid":"Invalid";
+    msgEle.style.color = valid?"#00FF00":"#FF0000";
+    document.querySelector('#verify').after(msgEle);
+    setTimeout(()=>{msgEle.remove()},2000);
+
+});
+
 let canvas = document.getElementById('c');
 let scene = new THREE.Scene();
 let renderer = new THREE.WebGLRenderer({canvas});
 let camera = new THREE.PerspectiveCamera(75,canvas.clientWidth/canvas.clientHeight,0.1,50);
 
-camera.position.set(5,5,5);
+camera.position.set(4,3,4);
 camera.lookAt(0,0,0);
 scene.background = 0x000000;
 
@@ -562,14 +631,14 @@ resetColor();
 renderer.render(scene,camera);
 requestAnimationFrame(render);
 
-setTimeout(function () {
-    cube.makeWhite();
-    console.log(cube.getState());
-    renderer.render(scene,camera);
-},3000);
+
 
 function render(time) {
     requestAnimationFrame(render);
+    if (resizeRendererToDisplaySize(renderer)) {
+        camera.aspect = canvas.clientWidth / canvas.clientHeight;
+        camera.updateProjectionMatrix();
+    }
     controls.update();
     renderer.render(scene,camera);
 }
@@ -618,21 +687,25 @@ function clickHandler(e){
     let rayCaster = new THREE.Raycaster();
     let mouse_position = new THREE.Vector2();
     
-    mouse_position.x = (e.clientX/canvas.clientWidth)*2-1;
-    mouse_position.y = 1 - 2*(e.clientY/canvas.clientHeight);
+    let rect = renderer.domElement.getBoundingClientRect();
+    mouse_position.x = ( ( event.clientX - rect.left ) / ( rect.width - rect.left ) ) * 2 - 1;
+    mouse_position.y = - ( ( event.clientY - rect.top ) / ( rect.bottom - rect.top) ) * 2 + 1;
 
     rayCaster.setFromCamera(mouse_position.clone(),camera);
     let intersections = rayCaster.intersectObjects(cube.cubies);
     
     if(intersections[0]){
-        console.log(intersections[0].object.vid);
+        if(intersections[0].object.vid < 21){
+            colorFace(intersections[0].object,Math.floor(intersections[0].faceIndex/2),COLORS[currentColor]);
+        }
     }
 }
 
 function handleResizing(){
-    renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);
-    camera.aspect = canvas.clientWidth/canvas.clientHeight;
-    camera.updateProjectionMatrix();
+    if (resizeRendererToDisplaySize()) {
+        camera.aspect = canvas.clientWidth / canvas.clientHeight;
+        camera.updateProjectionMatrix();
+    }
 }
 
 function resetColor(){
@@ -681,11 +754,29 @@ function shuffle(){
         setTimeout(function(){
             if(lastMove != null){
                 lastMove.call(cube);
+                /*for(let cubie of cube.cubies){
+                    cubie.position.x = Math.round(cubie.position.x)*1.05;
+                    cubie.position.y = Math.round(cubie.position.y)*1.05;
+                    cubie.position.z = Math.round(cubie.position.z)*1.05;
+                }*/
             }
             lastMove = randomMove();
         },3400*i);
     }
     setTimeout(function(){
+        for(let cubie of cube.cubies){
+            cubie.position.x = Math.round(cubie.position.x)*1.05;
+            cubie.position.y = Math.round(cubie.position.y)*1.05;
+            cubie.position.z = Math.round(cubie.position.z)*1.05;
+
+            let xR = Math.round(Math.round(cubie.rotation.x*180/Math.PI)/90)*90;
+            let yR = Math.round(Math.round(cubie.rotation.y*180/Math.PI)/90)*90;
+            let zR = Math.round(Math.round(cubie.rotation.z*180/Math.PI)/90)*90;
+
+            cubie.rotation.x = xR*Math.PI/180;
+            cubie.rotation.y = yR*Math.PI/180;
+            cubie.rotation.z = zR*Math.PI/180;
+        }
         lastMove.call(cube);
     },3400*i);
 }
@@ -694,4 +785,34 @@ function randomMove(){
     let turns = Math.floor(Math.random()*3);
     MOVES[6*turns+side][1].call(cubeAnimator);
     return MOVES[6*turns+side][0];
+}
+function resizeRendererToDisplaySize() {
+    const canvas = renderer.domElement;
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    const needResize = canvas.width !== width || canvas.height !== height;
+    if (needResize) {
+      renderer.setSize(width, height, false);
+    }
+    return needResize;
+  }
+function threeColor2Name(color) {
+    if(color.r == 1 && color.g == 0 && color.b == 0){
+    return 'r';
+    }
+    else if(color.r == 0 && color.g == 1 && color.b == 0){
+    return 'g';
+    }
+    else if(color.r == 0 && color.g == 0 && color.b == 1){
+    return 'b';
+    }
+    else if(color.r == 1 && color.g == 1 && color.b == 1){
+    return 'w';
+    }
+    else if(color.r == 1 && color.g == 1 && color.b == 0){
+    return 'y';
+    }
+    else if(color.r == 1 && color.g == 0.4 && color.b == 0){
+        return 'o';
+    }
 }
