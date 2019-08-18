@@ -1,6 +1,4 @@
 'use strict';
-//import {concatMap} from 'https://dev.jspm.io/rxjs@6/_esm2015/operators';
-//import {Observable,from} from 'https://dev.jspm.io/rxjs@6/_esm2015';
 const VID_POS_MAP = new Map(
     //edge cubies
     [
@@ -59,6 +57,10 @@ let cube = {
     BACK_CENTRAL_CUBIES : [24],
     UP_CENTRAL_CUBIES : [25],
     DOWN_CENTRAL_CUBIES : [26],
+
+    RIGHT_MIDDLE_CUBIES : [9,25,1,21,3,26,11,22],
+    FRONT_MIDDLE_CUBIES : [6,25,5,24,8,26,7,23],
+    FRONT_MIDDLE_ROW_CUBIES : [2,23,12,22,10,24,4,21],
 
     verify : function(){
         let state = this.getState();
@@ -253,7 +255,7 @@ let cube = {
         }
     },
 
-    r1 : function(){
+    r : function(){
         this.rotateClockwise(this.RIGHT_EDGE_CUBIES,1);
         this.rotateClockwise(this.RIGHT_CORNER_CUBIES,1);
     },
@@ -263,12 +265,12 @@ let cube = {
         this.rotateClockwise(this.RIGHT_CORNER_CUBIES,2);
     },
 
-    r3 : function(){
+    r1 : function(){
         this.rotateAntiClockwise(this.RIGHT_EDGE_CUBIES,1);
         this.rotateAntiClockwise(this.RIGHT_CORNER_CUBIES,1);
     },
 
-    l1 : function(){
+    l : function(){
         this.rotateClockwise(this.LEFT_EDGE_CUBIES,1);
         this.rotateClockwise(this.LEFT_CORNER_CUBIES,1);
     },
@@ -278,12 +280,12 @@ let cube = {
         this.rotateClockwise(this.LEFT_CORNER_CUBIES,2);
     },
 
-    l3 : function(){
+    l1 : function(){
         this.rotateAntiClockwise(this.LEFT_EDGE_CUBIES,1);
         this.rotateAntiClockwise(this.LEFT_CORNER_CUBIES,1);
     },
 
-    f1 : function(){
+    f : function(){
         this.rotateClockwise(this.FRONT_EDGE_CUBIES,1);
         this.rotateClockwise(this.FRONT_CORNER_CUBIES,1);
     },
@@ -293,12 +295,12 @@ let cube = {
         this.rotateClockwise(this.FRONT_CORNER_CUBIES,2);
     },
 
-    f3 : function(){
+    f1 : function(){
         this.rotateAntiClockwise(this.FRONT_EDGE_CUBIES,1);
         this.rotateAntiClockwise(this.FRONT_CORNER_CUBIES,1);
     },
 
-    b1 : function(){
+    b : function(){
         this.rotateClockwise(this.BACK_EDGE_CUBIES,1);
         this.rotateClockwise(this.BACK_CORNER_CUBIES,1);
     },
@@ -308,12 +310,12 @@ let cube = {
         this.rotateClockwise(this.BACK_CORNER_CUBIES,2);
     },
 
-    b3 : function(){
+    b1 : function(){
         this.rotateAntiClockwise(this.BACK_EDGE_CUBIES,1);
         this.rotateAntiClockwise(this.BACK_CORNER_CUBIES,1);
     },
 
-    u1 : function(){
+    u : function(){
         this.rotateClockwise(this.UP_EDGE_CUBIES,1);
         this.rotateClockwise(this.UP_CORNER_CUBIES,1);
     },
@@ -323,12 +325,12 @@ let cube = {
         this.rotateClockwise(this.UP_CORNER_CUBIES,2);
     },
 
-    u3 : function(){
+    u1 : function(){
         this.rotateAntiClockwise(this.UP_EDGE_CUBIES,1);
         this.rotateAntiClockwise(this.UP_CORNER_CUBIES,1);
     },
 
-    d1 : function(){
+    d : function(){
         this.rotateClockwise(this.DOWN_EDGE_CUBIES,1);
         this.rotateClockwise(this.DOWN_CORNER_CUBIES,1);
     },
@@ -338,14 +340,50 @@ let cube = {
         this.rotateClockwise(this.DOWN_CORNER_CUBIES,2);
     },
 
-    d3 : function(){
+    d1 : function(){
         this.rotateAntiClockwise(this.DOWN_EDGE_CUBIES,1);
         this.rotateAntiClockwise(this.DOWN_CORNER_CUBIES,1);
+    },
+
+    mr : function(){
+        this.rotateClockwise(this.RIGHT_MIDDLE_CUBIES,2);
+    },
+
+    mr2 : function(){
+        this.rotateClockwise(this.RIGHT_MIDDLE_CUBIES,4);
+    },
+
+    mr1 : function(){
+        this.rotateAntiClockwise(this.RIGHT_MIDDLE_CUBIES,2);
+    },
+
+    mf : function(){
+        this.rotateClockwise(this.FRONT_MIDDLE_CUBIES,2);
+    },
+
+    mf2 : function(){
+        this.rotateClockwise(this.FRONT_MIDDLE_CUBIES,4);
+    },
+
+    mf1 : function(){
+        this.rotateAntiClockwise(this.FRONT_MIDDLE_CUBIES,2);
+    },
+
+    mc : function(){
+        this.rotateClockwise(this.FRONT_MIDDLE_ROW_CUBIES,2);
+    },
+
+    mc2 : function(){
+        this.rotateClockwise(this.FRONT_MIDDLE_ROW_CUBIES,4);
+    },
+
+    mc1 : function(){
+        this.rotateAntiClockwise(this.FRONT_MIDDLE_ROW_CUBIES,2);
     },
 };
 
 let cubeAnimator = {
-    r1 : function(){
+    r : function(){
         let cubiesToRotate = cube.getCubiesByVID([].concat(cube.RIGHT_CORNER_CUBIES).concat(cube.RIGHT_EDGE_CUBIES).concat(cube.RIGHT_CENTRAL_CUBIES));
         this.rotate(cubiesToRotate,new THREE.Vector3(-1,0,0),Math.PI/2,0);
     },
@@ -355,12 +393,12 @@ let cubeAnimator = {
         this.rotate(cubiesToRotate,new THREE.Vector3(-1,0,0),Math.PI,0);
     },
 
-    r3 : function(){
+    r1 : function(){
         let cubiesToRotate = cube.getCubiesByVID([].concat(cube.RIGHT_CENTRAL_CUBIES).concat(cube.RIGHT_CORNER_CUBIES).concat(cube.RIGHT_EDGE_CUBIES));
         this.rotate(cubiesToRotate,new THREE.Vector3(1,0,0),90*Math.PI/180,0);
     },
 
-    l1 : function(){
+    l : function(){
         let cubiesToRotate = cube.getCubiesByVID([].concat(cube.LEFT_CENTRAL_CUBIES).concat(cube.LEFT_CORNER_CUBIES).concat(cube.LEFT_EDGE_CUBIES));
         this.rotate(cubiesToRotate,new THREE.Vector3(1,0,0),90*Math.PI/180,0);
     },
@@ -370,12 +408,12 @@ let cubeAnimator = {
         this.rotate(cubiesToRotate,new THREE.Vector3(1,0,0),Math.PI,0);
     },
 
-    l3 : function(){
+    l1 : function(){
         let cubiesToRotate = cube.getCubiesByVID([].concat(cube.LEFT_CENTRAL_CUBIES).concat(cube.LEFT_CORNER_CUBIES).concat(cube.LEFT_EDGE_CUBIES));        
         this.rotate(cubiesToRotate,new THREE.Vector3(-1,0,0),90*Math.PI/180,0);
     },
 
-    f1 : function(){
+    f : function(){
         let cubiesToRotate = cube.getCubiesByVID([].concat(cube.FRONT_CENTRAL_CUBIES).concat(cube.FRONT_CORNER_CUBIES).concat(cube.FRONT_EDGE_CUBIES));
         this.rotate(cubiesToRotate,new THREE.Vector3(0,0,-1),Math.PI/2,0);
     },
@@ -385,12 +423,12 @@ let cubeAnimator = {
         this.rotate(cubiesToRotate,new THREE.Vector3(0,0,-1),Math.PI,0);
     },
 
-    f3 : function(){
+    f1 : function(){
         let cubiesToRotate = cube.getCubiesByVID([].concat(cube.FRONT_CENTRAL_CUBIES).concat(cube.FRONT_CORNER_CUBIES).concat(cube.FRONT_EDGE_CUBIES));
         this.rotate(cubiesToRotate,new THREE.Vector3(0,0,1),90*Math.PI/180,0);
     },
 
-    b1 : function(){
+    b : function(){
         let cubiesToRotate = cube.getCubiesByVID([].concat(cube.BACK_CENTRAL_CUBIES).concat(cube.BACK_CORNER_CUBIES).concat(cube.BACK_EDGE_CUBIES));
         this.rotate(cubiesToRotate,new THREE.Vector3(0,0,1),90*Math.PI/180,0);
     },
@@ -400,12 +438,12 @@ let cubeAnimator = {
         this.rotate(cubiesToRotate,new THREE.Vector3(0,0,1),Math.PI,0);
     },
 
-    b3 : function(){
+    b1 : function(){
         let cubiesToRotate = cube.getCubiesByVID([].concat(cube.BACK_CENTRAL_CUBIES).concat(cube.BACK_CORNER_CUBIES).concat(cube.BACK_EDGE_CUBIES));
         this.rotate(cubiesToRotate,new THREE.Vector3(0,0,-1),90*Math.PI/180,0);
     },
 
-    u1 : function(){
+    u : function(){
         let cubiesToRotate = cube.getCubiesByVID([].concat(cube.UP_CENTRAL_CUBIES).concat(cube.UP_CORNER_CUBIES).concat(cube.UP_EDGE_CUBIES));
         this.rotate(cubiesToRotate,new THREE.Vector3(0,-1,0),90*Math.PI/180,0);
     },
@@ -415,12 +453,12 @@ let cubeAnimator = {
         this.rotate(cubiesToRotate,new THREE.Vector3(0,-1,0),Math.PI,0);
     },
 
-    u3 : function(){
+    u1 : function(){
         let cubiesToRotate = cube.getCubiesByVID([].concat(cube.UP_CENTRAL_CUBIES).concat(cube.UP_CORNER_CUBIES).concat(cube.UP_EDGE_CUBIES));
         this.rotate(cubiesToRotate,new THREE.Vector3(0,1,0),90*Math.PI/180,0);
     },
 
-    d1 : function(){
+    d : function(){
         let cubiesToRotate = cube.getCubiesByVID([].concat(cube.DOWN_CENTRAL_CUBIES).concat(cube.DOWN_CORNER_CUBIES).concat(cube.DOWN_EDGE_CUBIES));
         this.rotate(cubiesToRotate,new THREE.Vector3(0,1,0),90*Math.PI/180,0);
     },
@@ -430,10 +468,55 @@ let cubeAnimator = {
         this.rotate(cubiesToRotate,new THREE.Vector3(0,1,0),Math.PI,0);
     },
 
-    d3 : function(){
+    d1 : function(){
         let cubiesToRotate = cube.getCubiesByVID([].concat(cube.DOWN_CENTRAL_CUBIES).concat(cube.DOWN_CORNER_CUBIES).concat(cube.DOWN_EDGE_CUBIES));
         this.rotate(cubiesToRotate,new THREE.Vector3(0,-1,0),90*Math.PI/180,0);
         
+    },
+
+    mr : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.RIGHT_MIDDLE_CUBIES));
+        this.rotate(cubiesToRotate,new THREE.Vector3(0,0,1),90*Math.PI/180,0);
+    },
+
+    mr2 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.RIGHT_MIDDLE_CUBIES));
+        this.rotate(cubiesToRotate,new THREE.Vector3(0,0,1),Math.PI,0);
+    },
+
+    mr1 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.RIGHT_MIDDLE_CUBIES));
+        this.rotate(cubiesToRotate,new THREE.Vector3(0,0,-1),90*Math.PI/180,0);
+    },
+
+    mf : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.FRONT_MIDDLE_CUBIES));
+        this.rotate(cubiesToRotate,new THREE.Vector3(-1,0,0),90*Math.PI/180,0);
+    },
+
+    mf2 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.FRONT_MIDDLE_CUBIES));
+        this.rotate(cubiesToRotate,new THREE.Vector3(-1,0,0),Math.PI,0);
+    },
+
+    mf1 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.FRONT_MIDDLE_CUBIES));
+        this.rotate(cubiesToRotate,new THREE.Vector3(1,0,0),90*Math.PI/180,0);
+    },
+
+    mc : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.FRONT_MIDDLE_ROW_CUBIES));
+        this.rotate(cubiesToRotate,new THREE.Vector3(0,1,0),90*Math.PI/180,0);
+    },
+
+    mc2 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.FRONT_MIDDLE_ROW_CUBIES));
+        this.rotate(cubiesToRotate,new THREE.Vector3(0,1,0),Math.PI,0);
+    },
+
+    mc1 : function(){
+        let cubiesToRotate = cube.getCubiesByVID([].concat(cube.FRONT_MIDDLE_ROW_CUBIES));
+        this.rotate(cubiesToRotate,new THREE.Vector3(0,-1,0),90*Math.PI/180,0);
     },
 
     sineInverse : function(x,y) {
@@ -540,29 +623,32 @@ let cubeAnimator = {
                 cubeAnimator.rotate(cubies,axis,angle,total);
             });
         }
+        else{
+            fixPosition();
+        }
         
     }
 };
 
 const MOVES = [
-[cube.r1,cubeAnimator.r1],
-[cube.l1,cubeAnimator.l1],
-[cube.u1,cubeAnimator.u1],
-[cube.d1,cubeAnimator.d1],
-[cube.f1,cubeAnimator.f1],
-[cube.b1,cubeAnimator.b1],
+[cube.r,cubeAnimator.r],
+[cube.l,cubeAnimator.l],
+[cube.u,cubeAnimator.u],
+[cube.d,cubeAnimator.d],
+[cube.f,cubeAnimator.f],
+[cube.b,cubeAnimator.b],
 [cube.r2,cubeAnimator.r2],
 [cube.l2,cubeAnimator.l2],
 [cube.u2,cubeAnimator.u2],
 [cube.d2,cubeAnimator.d2],
 [cube.f2,cubeAnimator.f2],
 [cube.b2,cubeAnimator.b2],
-[cube.r3,cubeAnimator.r3],
-[cube.l3,cubeAnimator.l3],
-[cube.u3,cubeAnimator.u3],
-[cube.d3,cubeAnimator.d3],
-[cube.f3,cubeAnimator.f3],
-[cube.b3,cubeAnimator.b3],
+[cube.r1,cubeAnimator.r1],
+[cube.l1,cubeAnimator.l1],
+[cube.u1,cubeAnimator.u1],
+[cube.d1,cubeAnimator.d1],
+[cube.f1,cubeAnimator.f1],
+[cube.b1,cubeAnimator.b1],
             ];
 
 
@@ -631,7 +717,7 @@ resetColor();
 renderer.render(scene,camera);
 requestAnimationFrame(render);
 
-
+shuffle();
 
 function render(time) {
     requestAnimationFrame(render);
@@ -754,29 +840,12 @@ function shuffle(){
         setTimeout(function(){
             if(lastMove != null){
                 lastMove.call(cube);
-                /*for(let cubie of cube.cubies){
-                    cubie.position.x = Math.round(cubie.position.x)*1.05;
-                    cubie.position.y = Math.round(cubie.position.y)*1.05;
-                    cubie.position.z = Math.round(cubie.position.z)*1.05;
-                }*/
             }
             lastMove = randomMove();
         },3400*i);
     }
     setTimeout(function(){
-        for(let cubie of cube.cubies){
-            cubie.position.x = Math.round(cubie.position.x)*1.05;
-            cubie.position.y = Math.round(cubie.position.y)*1.05;
-            cubie.position.z = Math.round(cubie.position.z)*1.05;
-
-            let xR = Math.round(Math.round(cubie.rotation.x*180/Math.PI)/90)*90;
-            let yR = Math.round(Math.round(cubie.rotation.y*180/Math.PI)/90)*90;
-            let zR = Math.round(Math.round(cubie.rotation.z*180/Math.PI)/90)*90;
-
-            cubie.rotation.x = xR*Math.PI/180;
-            cubie.rotation.y = yR*Math.PI/180;
-            cubie.rotation.z = zR*Math.PI/180;
-        }
+        fixPosition();
         lastMove.call(cube);
     },3400*i);
 }
@@ -814,5 +883,20 @@ function threeColor2Name(color) {
     }
     else if(color.r == 1 && color.g == 0.4 && color.b == 0){
         return 'o';
+    }
+}
+function fixPosition() {
+    for(let cubie of cube.cubies){
+        cubie.position.x = Math.round(cubie.position.x)*1.05;
+        cubie.position.y = Math.round(cubie.position.y)*1.05;
+        cubie.position.z = Math.round(cubie.position.z)*1.05;
+
+        let xR = Math.round(Math.round(cubie.rotation.x*180/Math.PI)/90)*90;
+        let yR = Math.round(Math.round(cubie.rotation.y*180/Math.PI)/90)*90;
+        let zR = Math.round(Math.round(cubie.rotation.z*180/Math.PI)/90)*90;
+
+        cubie.rotation.x = xR*Math.PI/180;
+        cubie.rotation.y = yR*Math.PI/180;
+        cubie.rotation.z = zR*Math.PI/180;
     }
 }
