@@ -24,6 +24,11 @@
                 grid-template-columns: 1fr 1fr;
                 height: 100vh;
             }
+            .grid-parent-horizontal {
+                display: grid;
+                grid-template-rows: 1fr 1fr;
+                height: 100vh;
+            }
             .child {
                 border: 1px solid indigo;
                 padding: 1rem
@@ -43,12 +48,12 @@
                 background-color: white; /* Green */
                 border: 2px solid #4CAF50;
                 color: black;
-                padding: 16px 32px;
+                padding: 6px 22px;
                 text-align: center;
                 text-decoration: none;
                 display: inline-block;
-                font-size: 16px;
-                margin: 4px 10px;
+                font-size: 14px;
+                margin: 1em 10px;
                 cursor: pointer;
                 box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
             }
@@ -56,31 +61,124 @@
                 transform: translateY(4px);
             }
 
-            
+            .info{
+                margin: 0.5rem
+            }
+            .move{
+                font-size: 1.3vw;
+                font-family: Georgia, 'Times New Roman', Times, serif;
+                padding: 6px
+            }
+            .moveActive{
+                color: #4CAF50;
+                font-weight: bold
+            }
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 50px;
+                height: 24px;
+            }
+
+            .switch input { 
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #ccc;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 24px;
+                width: 26px;
+                left: 0px;
+                bottom: 0px;
+                background-color: black;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+            input:checked + .slider {
+                background-color: #2196F3;
+            }
+
+            input:focus + .slider {
+                box-shadow: 0 0 1px #2196F3;
+            }
+
+            input:checked + .slider:before {
+                -webkit-transform: translateX(26px);
+                -ms-transform: translateX(26px);
+                transform: translateX(26px);
+            }
+
+                /* Rounded sliders */
+            .slider.round {
+                border-radius: 34px;
+            }
+
+            .slider.round:before {
+                border-radius: 50%;
+            }
+
+            .disabled{
+                pointer-events: none;
+                opacity: 0.6;
+            }
         </style>
         <script src="{{url_for('static',filename='js/three.js')}}"></script>
         <script src="{{url_for('static',filename='js/OrbitControls.js')}}"></script>
+        <script src="{{url_for('static',filename='js/jquery-3.4.1.js')}}"></script>
     </head>
     <body>
         <div class="grid-parent">
             <div class="child">
                 <canvas id="c"></canvas>
             </div>
-            <div class="child">
-                <button id="makeWhite" class="simpleButton">Fill Colors</button>
-                <button id="resetColor" class="simpleButton">Reset Colors</button>
-                <button id="shuffle" class="simpleButton">Shuffle</button>
-                <button id="verify" class="simpleButton">Verify</button>
-                <h3>Current Color</h3>
-                <div id="displayColor"></div>
-                <h3>Select Color</h3>
-                <div id="pickColor" style="margin-top: 1em; height: 15%;">
-                    <button class="colorBtn" value="0" style="background-color: white"></button>
-                    <button class="colorBtn" value="1" style="background-color: yellow"></button>
-                    <button class="colorBtn" value="2" style="background-color: red"></button>
-                    <button class="colorBtn" value="3" style="background-color: orange"></button>
-                    <button class="colorBtn" value="4" style="background-color: blue"></button>
-                    <button class="colorBtn" value="5" style="background-color: green"></button>
+            <div class="child grid-parent-horizontal">
+                <div class="child">
+                    <div>
+                        <label style="font-weight: bold">Color filling :</label>
+                        <label class="switch">
+                            <input type="checkbox" id="filling">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                      
+                    <button id="resetColor" class="simpleButton">Reset Colors</button>
+                    <button id="shuffle" class="simpleButton">Shuffle</button>
+                    <button id="verify" class="simpleButton">Verify</button>
+                    <button id="solve" class="simpleButton">Solve</button>
+                    <h3>Current Color</h3>
+                    <div id="displayColor"></div>
+                    <h3>Select Color</h3>
+                    <div id="pickColor" style="margin-top: 1em; height: 15%;">
+                        <button class="colorBtn" value="0" style="background-color: white"></button>
+                        <button class="colorBtn" value="1" style="background-color: yellow"></button>
+                        <button class="colorBtn" value="2" style="background-color: red"></button>
+                        <button class="colorBtn" value="3" style="background-color: orange"></button>
+                        <button class="colorBtn" value="4" style="background-color: blue"></button>
+                        <button class="colorBtn" value="5" style="background-color: green"></button>
+                    </div>
+                </div>
+                <div class="child" hidden="true" id="infoBlock">
+                    <h4 class="info" id="msg"></h4>
+                    <h4 class="info" id="time"></h4>
+                    <h4 class="info" id="nstep"></h4>
+                    <h4 class="info">Steps</h4>
+                    <div id="steps" style="word-break: break-word"></div>
                 </div>
             </div>
         </div>

@@ -33,6 +33,11 @@ const VID_POS_MAP = new Map(
     ]
 );
 
+let shuffleSpeed = 2;
+let solveSpeed = 2;
+let oneRotationTime = 1700;
+let filling = false;
+
 const FACE_ID_MAP = ['r','l','u','d','f','b'];
 const COLORS = [new THREE.Color(1,1,1),new THREE.Color(1,1,0),new THREE.Color(1,0,0),new THREE.Color(1,0.4,0),new THREE.Color(0,0,1),new THREE.Color(0,1,0)];
 
@@ -64,7 +69,6 @@ let cube = {
 
     verify : function(){
         let state = this.getState();
-        console.log(state);
         let occurances = new Map(
             [
                 ['r',0],
@@ -80,7 +84,6 @@ let cube = {
                 occurances.set(state[i][j],occurances.get(state[i][j])+1);
             }
         }
-        console.log(occurances);
         for(let color of ['r','g','b','w','o','y']){
             if(occurances.get(color) != 9){
                 return false;
@@ -519,6 +522,25 @@ let cubeAnimator = {
         this.rotate(cubiesToRotate,new THREE.Vector3(0,-1,0),90*Math.PI/180,0);
     },
 
+    executeSequence : function (moves){
+        let i = 0;
+        let stepsEle = document.querySelector('#steps');
+        for(; i < moves.length; i++){
+            
+            setTimeout(function(i){
+                stepsEle.children[i].classList.add('moveActive');
+                if(i != 0){
+                    cube[moves[i-1]].call(cube);
+                }
+                cubeAnimator[moves[i]].call(cubeAnimator);
+            },oneRotationTime*i,i);
+        }
+        setTimeout(function(){
+            fixPosition();
+            cube[moves[i-1]].call(cube);
+        },oneRotationTime*i);
+    },
+
     sineInverse : function(x,y) {
         let r = Math.sqrt(x**2+y**2);
         let angle = Math.asin(Math.abs(y)/r);
@@ -614,9 +636,9 @@ let cubeAnimator = {
 
     rotate : function(cubies,axis,angle,total){
         if(total < angle){
-            total+=Math.PI/180;
+            total+=2*Math.PI/180;
             for (let cube of cubies) {
-                this.move(cube,axis,Math.PI/180);   
+                this.move(cube,axis,2*Math.PI/180);   
             }            
             renderer.render(scene,camera);
             requestAnimationFrame(function(){
@@ -656,23 +678,28 @@ let currentColor = 1;
 let displayColor = document.querySelector('#displayColor');
 displayColor.style.backgroundColor = "rgb(" + Math.floor(COLORS[currentColor].r*255) + ", " + Math.floor(COLORS[currentColor].g*255) + ", " + Math.floor(COLORS[currentColor].b*255) + ")";
 
-let makeWhiteBtn = document.querySelector('#makeWhite');
+let fillingSwitch = document.querySelector('#filling');
+fillingSwitch.checked = false;
 let resetColorBtn = document.querySelector('#resetColor');
 let shuffleBtn = document.querySelector('#shuffle');
 let colorBtn = document.querySelector('#pickColor');
 let verifyBtn = document.querySelector('#verify');
-makeWhiteBtn.addEventListener('click',function(){
-    for(let cubie of cube.cubies){
-        scene.remove(cubie);
+let solveBtn = document.querySelector('#solve');
+fillingSwitch.addEventListener('change',function(e){
+    console.log("unchecked");
+    if(fillingSwitch.checked){
+        fillingStart();
     }
-    makeCube();
-    resetColor();
-    cube.makeWhite();
+    else{
+        fillingStop();
+    }
 });
 resetColorBtn.addEventListener('click',function(){
     for(let cubie of cube.cubies){
         scene.remove(cubie);
     }
+    fillingSwitch.checked = false;
+    fillingStop();
     makeCube();
     resetColor();
 });
@@ -692,6 +719,57 @@ verifyBtn.addEventListener('click',function(){
     setTimeout(()=>{msgEle.remove()},2000);
 
 });
+solveBtn.addEventListener('click',function(){
+    if(cube.verify()){
+        let state = cube.getState();
+        $.ajax(
+            {
+                method:"POST",
+                url : '/solver',
+                contentType:"application/json",
+                data:JSON.stringify(state),
+                success:function(data,status){
+                    if (status == "success") {
+                        if(data.status == 1){
+                            let msgEle = document.querySelector('#msg');
+                            msgEle.textContent = "Message : Cube Solved !!";
+                            let nstepEle = document.querySelector('#nstep');
+                            nstepEle.textContent = "No. of steps : "+data.length;
+                            let timeEle = document.querySelector("#time");
+                            timeEle.textContent = "Time taken to solve : "+data.time/1000000+" Seconds";
+                            let infoBlock = document.querySelector('#infoBlock');
+                            infoBlock.hidden = false;
+                            let stepsELe = document.querySelector('#steps');
+                            stepsELe.innerHTML = "";
+                            for(let i = 0; i < data.length; i++){
+                                let move = document.createElement('span');
+                                move.classList.add('move');
+                                move.textContent = data.ans[i].toUpperCase();
+                                stepsELe.append(move);
+                            }
+                            cubeAnimator.executeSequence(data.ans);
+                        }
+                        else{
+                            let msgEle = document.querySelector('#msg');
+                            msgEle.textContent = "Message : Cube is in invalid state.";
+                            let infoBlock = document.querySelector('#infoBlock');
+                            infoBlock.hidden = false;
+                        }
+                    }
+                    else{
+                        let msgEle = document.querySelector('#msg');
+                        msgEle.textContent = msgEle.textContent.concat("Something went wrong with the server !!");
+                    }
+                }
+            }
+        );
+    }
+    else{
+        let msgEle = document.querySelector('#msg');
+        msgEle.textContent = "Message : Cube is in invalid state.";
+    }
+    
+});
 
 let canvas = document.getElementById('c');
 let scene = new THREE.Scene();
@@ -703,7 +781,7 @@ camera.lookAt(0,0,0);
 scene.background = 0x000000;
 
 canvas.addEventListener('resize',handleResizing);
-canvas.addEventListener('click',clickHandler);
+
 
 const controls = new THREE.OrbitControls(camera, canvas);
 controls.target.set(0,0,0);
@@ -717,7 +795,7 @@ resetColor();
 renderer.render(scene,camera);
 requestAnimationFrame(render);
 
-shuffle();
+//shuffle();
 
 function render(time) {
     requestAnimationFrame(render);
@@ -836,18 +914,18 @@ function resetColor(){
 function shuffle(){
     let lastMove = null;
     let i = 0;
-    for(; i < 10; i++){
+    for(; i < 5; i++){
         setTimeout(function(){
             if(lastMove != null){
                 lastMove.call(cube);
             }
             lastMove = randomMove();
-        },3400*i);
+        },oneRotationTime*i);
     }
     setTimeout(function(){
         fixPosition();
         lastMove.call(cube);
-    },3400*i);
+    },oneRotationTime*i);
 }
 function randomMove(){
     let side = Math.floor(Math.random()*6);
@@ -899,4 +977,22 @@ function fixPosition() {
         cubie.rotation.y = yR*Math.PI/180;
         cubie.rotation.z = zR*Math.PI/180;
     }
+}
+function fillingStart(){
+    canvas.addEventListener('click',clickHandler);
+    shuffleBtn.classList.add('disabled');
+    solveBtn.classList.add('disabled');
+    filling = true;
+    for(let cubie of cube.cubies){
+        scene.remove(cubie);
+    }
+    makeCube();
+    resetColor();
+    cube.makeWhite();
+}
+function fillingStop(){
+    shuffleBtn.classList.remove('disabled');
+    solveBtn.classList.remove('disabled');
+    canvas.removeEventListener('click',clickHandler);
+    filling = false;
 }
