@@ -685,8 +685,8 @@ let shuffleBtn = document.querySelector('#shuffle');
 let colorBtn = document.querySelector('#pickColor');
 let verifyBtn = document.querySelector('#verify');
 let solveBtn = document.querySelector('#solve');
+
 fillingSwitch.addEventListener('change',function(e){
-    console.log("unchecked");
     if(fillingSwitch.checked){
         fillingStart();
     }
