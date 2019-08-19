@@ -4,7 +4,7 @@
                     website gives you the steps to solve your cube.
                 </p>
                 <h3>How to use ?</h3>
-                <p>Turn on "Color filling" to enable color filling in the virtual cube. Now select a color from the>
+                <p>Turn on "Color filling" to enable color filling in the virtual cube. Now select a color from the
                     color palette and click on the face of virtual cube to fill the color. Once you finish color filling turn off 
                     "color filling". To make sure you have not made a mistake in color filling press verify. If everything is fine,
                     press "Solve" and SEE THE MAGIC !!
